@@ -14,13 +14,15 @@ export default function CartPage() {
 
   const handleCheckout = async () => {
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
+    const { data: { session } } = await supabase.auth.getSession();
     const sessionId = localStorage.getItem('session_id') ?? '';
-    const res = await fetch('/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-session-id': sessionId },
-    });
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'x-session-id': sessionId,
+    };
+    if (session?.user?.id) headers['x-user-id'] = session.user.id;
+
+    const res = await fetch('/api/orders', { method: 'POST', headers });
 
     if (!res.ok) {
       toast.error('Failed to place order');
@@ -57,7 +59,7 @@ export default function CartPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-serif font-bold truncate">{item.name}</div>
-                <div className="text-sm text-[var(--amber)] font-semibold">	₦{item.price.toFixed(2)} each</div>
+                <div className="text-sm text-[var(--amber)] font-semibold">${item.price.toFixed(2)} each</div>
               </div>
               {/* Qty controls */}
               <div className="flex items-center gap-1 border border-[var(--border)] rounded-lg overflow-hidden bg-[var(--cream)]">
@@ -70,7 +72,7 @@ export default function CartPage() {
                 </button>
               </div>
               <div className="font-bold text-[var(--amber)] min-w-[60px] text-right">
-                	₦{(item.price * item.quantity).toFixed(2)}
+                ${(item.price * item.quantity).toFixed(2)}
               </div>
               <button onClick={() => removeItem(item.productId)} className="text-red-400 hover:text-red-600 transition-colors p-1">
                 <Trash2 size={16} />
@@ -83,12 +85,12 @@ export default function CartPage() {
         <div className="bg-[var(--warm-white)] border border-[var(--border)] rounded-xl p-5 sticky top-20">
           <h2 className="font-serif text-xl font-bold mb-4">Order Summary</h2>
           <div className="space-y-2 text-sm text-[var(--brown-600)] mb-4">
-            <div className="flex justify-between"><span>Subtotal</span><span>	₦{subtotal.toFixed(2)}</span></div>
-            <div className="flex justify-between"><span>Delivery</span><span>	₦{DELIVERY_FEE.toFixed(2)}</span></div>
+            <div className="flex justify-between"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
+            <div className="flex justify-between"><span>Delivery</span><span>${DELIVERY_FEE.toFixed(2)}</span></div>
           </div>
           <div className="flex justify-between font-bold text-base pt-3 border-t border-[var(--border)]">
             <span>Total</span>
-            <span className="text-[var(--amber)]">	₦{total.toFixed(2)}</span>
+            <span className="text-[var(--amber)]">${total.toFixed(2)}</span>
           </div>
           <button
             onClick={handleCheckout}
