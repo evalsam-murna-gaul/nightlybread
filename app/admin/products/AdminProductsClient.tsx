@@ -49,22 +49,23 @@ export function AdminProductsClient({ initialProducts }: { initialProducts: Prod
   const openCreate = () => { setForm(safeForm()); setEditId(null); setModal('create'); };
   const openEdit = (p: Product) => {
     setForm(safeForm({ name: p.name, description: p.description, price: String(p.price ?? ''), stock: String(p.stock ?? ''), category: p.category, emoji: p.emoji, imageUrl: p.imageUrl ?? '' }));
-    setEditId(p._id); setModal('edit');
+    setEditId(String(p._id)); setModal('edit');
   };
 
   const handleSave = async () => {
     if (!form.name || !form.price) { toast.error('Name and price are required'); return; }
+    if (modal === 'edit' && !editId) { toast.error('No product selected'); return; }
     setSaving(true);
     try {
       if (modal === 'create') {
         const res = await fetch('/api/products', { method: 'POST', headers: authHeaders(), body: JSON.stringify(form) });
         const p = await res.json();
-        setProducts(prev => [p, ...prev]);
+        setProducts(prev => [{ ...p, _id: String(p._id) }, ...prev]);
         toast.success('Product created!');
       } else {
         const res = await fetch(`/api/products/${editId}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify(form) });
         const p = await res.json();
-        setProducts(prev => prev.map(x => x._id === editId ? p : x));
+        setProducts(prev => prev.map(x => String(x._id) === editId ? { ...p, _id: String(p._id) } : x));
         toast.success('Product updated!');
       }
       setModal(null);
@@ -75,17 +76,18 @@ export function AdminProductsClient({ initialProducts }: { initialProducts: Prod
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this product?')) return;
     await fetch(`/api/products/${id}`, { method: 'DELETE', headers: authHeaders() });
-    setProducts(prev => prev.filter(p => p._id !== id));
+    setProducts(prev => prev.filter(p => String(p._id) !== id));
     toast.success('Product deleted');
   };
 
   const handleToggle = async (p: Product) => {
-    const res = await fetch(`/api/products/${p._id}`, {
+    const id = String(p._id);
+    const res = await fetch(`/api/products/${id}`, {
       method: 'PATCH', headers: authHeaders(),
       body: JSON.stringify({ available: !p.available }),
     });
     const updated = await res.json();
-    setProducts(prev => prev.map(x => x._id === p._id ? updated : x));
+    setProducts(prev => prev.map(x => String(x._id) === id ? { ...updated, _id: id } : x));
     toast.success(`Marked as ${updated.available ? 'In Stock' : 'Out of Stock'}`);
   };
 

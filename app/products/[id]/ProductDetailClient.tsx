@@ -73,7 +73,7 @@ export function ProductDetailClient({ product }: { product: Product }) {
                 className="flex-1 flex items-center justify-center gap-2 bg-[var(--amber)] hover:bg-[var(--amber-light)] disabled:opacity-60 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors"
               >
                 <ShoppingBag size={18} />
-                Add to Cart · ${(product.price * qty).toFixed(2)}
+                Add to Cart · ₦{(product.price * qty).toFixed(2)}
               </button>
             </div>
           )}
