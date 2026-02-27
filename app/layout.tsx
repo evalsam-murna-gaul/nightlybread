@@ -6,8 +6,8 @@ import { Toaster } from 'sonner';
 import { CartProvider } from '@/components/shop/CartProvider';
 
 export const metadata: Metadata = {
-  title: 'Taste & Co. | Artisan Food Store',
-  description: 'Handcrafted foods, seasonal ingredients, and curated gourmet boards.',
+  title: 'Nightly Bread',
+  description: 'Your sure plug to the best sandwiches.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -19,17 +19,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Navbar />
             <main className="flex-1">{children}</main>
             <footer
-              style={{ background: 'var(--brown-950)', color: 'var(--cream)' }}
+              style={{ background: 'var(--pale-yellow)', color: 'var(--dark-blue)' }}
               className="py-8 text-center text-sm opacity-70 mt-auto"
             >
-              © {new Date().getFullYear()} Taste & Co. · All rights reserved
+              © {new Date().getFullYear()} Nightly Bread · All rights reserved
             </footer>
           </div>
         </CartProvider>
         <Toaster
           position="bottom-right"
           toastOptions={{
-            style: { background: 'var(--brown-950)', color: 'var(--cream)', border: 'none' },
+            style: { background: 'var(--pale-yellow)', color: 'var(--dark-blue)', border: 'none' },
           }}
         />
       </body>

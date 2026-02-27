@@ -90,7 +90,7 @@ export function Navbar() {
             )}
 
             {/* Cart */}
-            <Link href="/cart" className="relative flex items-center gap-2 bg-[#ebea9c] hover:bg-yellow-300 text-grey-100 px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ml-1">
+            <Link href="/cart" className="relative flex items-center gap-2 bg-[#ebea9c] hover:bg-yellow-300 text-[#0a0325] px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ml-1">
               <ShoppingCart size={16} />
               Cart
               {itemCount > 0 && (
