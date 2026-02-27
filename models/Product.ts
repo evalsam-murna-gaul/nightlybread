@@ -18,11 +18,11 @@ export interface IProduct {
 const ProductSchema = new Schema<IProduct>(
   {
     name:        { type: String, required: true, trim: true },
-    description: { type: String, required: true },
+    description: { type: String, default: '' },
     price:       { type: Number, required: true, min: 0 },
     stock:       { type: Number, required: true, min: 0, default: 0 },
     available:   { type: Boolean, default: true },
-    category:    { type: String, required: true, enum: ['Breads', 'Pastries', 'Boards', 'Desserts', 'Mains'] },
+    category:    { type: String, required: true, enum: ['Breads', 'Pastries', 'Boards', 'Desserts', 'Mains', 'Drinks', 'Sides', 'Platters'] },
     imageUrl:    { type: String },
     emoji:       { type: String, default: '🍽️' },
   },

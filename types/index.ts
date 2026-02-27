@@ -45,8 +45,8 @@ export interface User {
   name?: string;
 }
 
-export type Category = 'All' | 'Sandwiches' | 'Sides' | 'Drinks' | 'Platters';
+export type Category = 'All' | 'Breads' | 'Pastries' | 'Boards' | 'Desserts' | 'Mains' | 'Drinks' | 'Sides' | 'Platters';
 
-export const CATEGORIES: Category[] = ['All', 'Sandwiches', 'Sides', 'Drinks', 'Platters'];
+export const CATEGORIES: Category[] = ['All', 'Breads', 'Pastries', 'Boards', 'Desserts', 'Mains', 'Drinks', 'Sides', 'Platters'];
 
 export const DELIVERY_FEE = 4.99;
