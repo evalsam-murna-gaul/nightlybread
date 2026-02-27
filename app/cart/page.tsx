@@ -2,7 +2,6 @@
 // app/cart/page.tsx
 import { useCart } from '@/components/shop/CartProvider';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { toast } from 'sonner';
 import { DELIVERY_FEE } from '@/types';
@@ -10,27 +9,32 @@ import { createClient } from '@/lib/supabase/client';
 
 export default function CartPage() {
   const { items, subtotal, total, updateQty, removeItem, clearCart, loading } = useCart();
-  const router = useRouter();
 
   const handleCheckout = async () => {
-    const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const sessionId = localStorage.getItem('session_id') ?? '';
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'x-session-id': sessionId,
-    };
-    if (session?.user?.id) headers['x-user-id'] = session.user.id;
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const sessionId = localStorage.getItem('session_id') ?? '';
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'x-session-id': sessionId,
+      };
+      if (session?.user?.id) headers['x-user-id'] = session.user.id;
 
-    const res = await fetch('/api/orders', { method: 'POST', headers });
+      const res = await fetch('/api/orders', { method: 'POST', headers });
+      const data = await res.json();
 
-    if (!res.ok) {
-      toast.error('Failed to place order');
-      return;
+      if (!res.ok) {
+        toast.error(data.error ?? 'Failed to place order');
+        return;
+      }
+
+      await clearCart();
+      window.location.href = '/checkout/success';
+    } catch (err) {
+      console.error('Checkout error:', err);
+      toast.error('Something went wrong. Please try again.');
     }
-
-    await clearCart();
-    router.push('/checkout/success');
   };
 
   if (items.length === 0) return (
